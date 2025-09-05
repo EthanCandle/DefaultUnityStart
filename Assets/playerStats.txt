@@ -1,0 +1,27 @@
+{
+    "hasBeatenGame": false,
+    "isInMainRun": false,
+    "levelCurrentlyOnMainRun": 1,
+    "amountPlayerJumps": 0,
+    "amountPlayerDashes": 0,
+    "amountPlayerDies": 0,
+    "amountPlayerCandy": 0,
+    "fastestTimeToCompleteGame": 0.0,
+    "currentTimeToCompleteGame": 0.0,
+    "fastestLevelTimes": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "currentLevelTimes": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ]
+}
