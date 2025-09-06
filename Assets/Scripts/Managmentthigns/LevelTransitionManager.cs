@@ -96,7 +96,8 @@ public class LevelTransitionManager : MonoBehaviour
 
     public void PlayTransitionIn(int levelNum = 0)
     {
-       
+
+        print("Going in");
         PauseTime();
         levelTransitionUIHolder.SetActive(true);
         levelTransAnimator.Play("GoingIn");
@@ -133,12 +134,13 @@ public class LevelTransitionManager : MonoBehaviour
 
     public void SetSettingAllowedToPause(bool state)
     {
-        print("Is gm null?");
+        //print("Is gm null?");
         if(GameManager.instance == null)
         {
             print("GM IS NULL");
 
         }
+       // print($"Pausing state: {state}");
         GameManager.instance.SetPausing(state);
     }
 

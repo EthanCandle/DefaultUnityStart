@@ -2149,7 +2149,6 @@ GameObject:
   - component: {fileID: 3545147962144047750}
   - component: {fileID: 876065773886686334}
   - component: {fileID: 6736228998756567132}
-  - component: {fileID: 5928435333341263757}
   m_Layer: 5
   m_Name: PauseMenuCanvas
   m_TagString: PlayerMenu
@@ -2292,33 +2291,13 @@ MonoBehaviour:
   settingsScript: {fileID: 0}
   popUpManager: {fileID: 0}
   isPaused: 0
+  canPause: 0
   mainMenuScript: {fileID: 876065773886686334}
   summonSound: {fileID: 11400000, guid: a2c6dc59a1019a84ebbd12ec720dea09, type: 2}
   deSummonSound: {fileID: 11400000, guid: c6a63705053cc0341a9412aa781464e8, type: 2}
   pauseMenuDefaultButton: {fileID: 7818931311548373671}
   unPaused: 0
   canvasGroup: {fileID: 7054816104384082543}
---- !u!114 &5928435333341263757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4701780059437457944}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8bb9f07ecb612e49882fee0c0aed652, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentButton: {fileID: 0}
-  previousButton: {fileID: 0}
-  defaultButtons:
-  - {fileID: 4323668326231334543}
-  - {fileID: 0}
-  - {fileID: 0}
-  validButtonsStore: []
-  allButtonsStore: []
-  shouldReselectButton: 1
 --- !u!1 &4797872786963640412
 GameObject:
   m_ObjectHideFlags: 0

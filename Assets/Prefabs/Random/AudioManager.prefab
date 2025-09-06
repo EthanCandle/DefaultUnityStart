@@ -240,19 +240,15 @@ MonoBehaviour:
   - {fileID: 24300002, guid: e5c64160d8db3d54181c92225215f2b8, type: 2}
   - {fileID: 24300002, guid: ef51af42d9e1d40499e7ccd432289a0c, type: 2}
   inMainMenuFirstTime: 0
-  volumeData: E:/0_Things/Unity/TypingGameWithPlayControllerItchio/Assets/volumeData.txt
+  volumeData: E:/0_Things/Unity/Brackeys2025-2RIskIt/Assets/volumeData.txt
   audioDataLocal:
     sfxVolume: 0
     musicVolume: 0
     controllerSensitivity: 0
     isSFXMuted: 0
     isMusicMuted: 0
-    isParticlesMuted: 0
-    isShadersMuted: 0
-    isMainMenuCandyMuted: 0
   settingScript: {fileID: 0}
   gm: {fileID: 0}
-  songVolumeText: {fileID: 0}
 --- !u!1 &5409544160070127489
 GameObject:
   m_ObjectHideFlags: 0

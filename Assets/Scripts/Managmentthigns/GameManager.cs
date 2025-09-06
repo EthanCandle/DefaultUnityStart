@@ -23,12 +23,12 @@ public class GameManager : MonoBehaviour
     {
         if (instance == null)
         {
-            print("Set gm instance");
+           // print("Set gm instance");
             instance = this;
         }
         else
         {
-            GetLocalScripts();
+           GameManager.instance.GetLocalScripts();
             Destroy(gameObject);
             return;
         }
@@ -64,9 +64,17 @@ public class GameManager : MonoBehaviour
     }
     public void GetLocalScripts()
     {
-        settingsManagerScript = GameObject.FindGameObjectWithTag("PlayerMenu").GetComponent<SettingsManager>();
-        // playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        GameObject playerMenuObject = GameObject.FindGameObjectWithTag("PlayerMenu");
 
+        if (playerMenuObject != null)
+        {
+            settingsManagerScript = playerMenuObject.GetComponent<SettingsManager>();
+        }
+        else
+        {
+            settingsManagerScript = null; // Optional, makes it clear
+            Debug.LogWarning("No object with tag 'PlayerMenu' was found in the scene.");
+        }
     }
 
 
@@ -123,6 +131,7 @@ public class GameManager : MonoBehaviour
 
     public void SetPausing(bool state)
     {
+        if(settingsManagerScript)
         settingsManagerScript.SetPausing(state);
     }
 

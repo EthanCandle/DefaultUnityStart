@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Settings : MonoBehaviour
 {
+    // this is the options manager
     public static Settings instance;
     public bool isInOptions = false;
     public AudioManager audioManager;
@@ -24,7 +25,7 @@ public class Settings : MonoBehaviour
 
     public Button quitButtonToSet;
 
-    bool ignoreNextMusicChange = false, ignoreNextSFXChange = false;
+    bool ignoreNextMusicChange = false, ignoreNextSFXChange = false, ignoreNextSensitivityChange = false;
 
     private void Awake()
     {
@@ -47,20 +48,7 @@ public class Settings : MonoBehaviour
 
         audioManager = AudioManager.instance;
 
-        if (audioManager.audioDataLocal.isMusicMuted)
-        {
-            print("Music muted");
-            MuteMusic();
-            audioManager.CallDelayFrameMusic();
-        }
-        if (audioManager.audioDataLocal.isSFXMuted)
-        {
-            print("Music muted");
-            MuteSFX();
-            audioManager.CallDelayFrameSFX();
-        }
-
-        CallDelayStartStuff();
+        SetStartStuff();
     }
 
     // Update is called once per frame
@@ -73,54 +61,73 @@ public class Settings : MonoBehaviour
         audioManager = AudioManager.instance;
     }
 
-    public void CallDelayStartStuff()
-    {
-        audioManager = AudioManager.instance;
-        StartCoroutine(DelayStartStuff());
-    }
 
-    public IEnumerator DelayStartStuff()
+    public void SetStartStuff()
     {
-        yield return null;
         SetSliderOnStartSFX();
         SetSliderOnStartMusic();
         SetSliderOnStartController();
+
+        isMutedMusic = audioManager.audioDataLocal.isMusicMuted;
+        isMutedSFX = audioManager.audioDataLocal.isSFXMuted;
+        SetBothImages();
     }
+
+
+    // these set slider are called only by script
     public void SetSliderOnStartSFX()
     {
         // call this whenever this thing is set active (need to see if theres a set active start_
         // makes it  so the slier starts on the correct value when it is made
+        ignoreNextSFXChange = true;
         volumeSliderSFX.value = audioManager.audioDataLocal.sfxVolume;
+        ignoreNextSFXChange = false;
     }
     public void SetSliderOnStartMusic()
     {
         // call this whenever this thing is set active (need to see if theres a set active start_
         // makes it  so the slier starts on the correct value when it is made
-        print("Set slide on music");
+      //  print("Set slide on music");
+        ignoreNextMusicChange = true;
         volumeSliderMusic.value = audioManager.audioDataLocal.musicVolume;
+
+        ignoreNextMusicChange = false;
+
     }
     public void SetSliderOnStartController()
     {
         // call this whenever this thing is set active (need to see if theres a set active start_
         // makes it  so the slier starts on the correct value when it is made
-        print("Set slide on controller");
+      // print("Set slide on controller");
         controllerSensitivitySlider.value = audioManager.audioDataLocal.controllerSensitivity;
+
     }
 
+
+    // these change function only called by changing the value of hte sliders
     public void ChangeVolumeSFX(Slider slider)
     {
         // print((int)volumeSlider.value);
-        if (ignoreNextMusicChange)
+        if (ignoreNextSFXChange)
         {
-
+            print("Blocked sfx");
+            ignoreNextSFXChange = false;
+            return;
         }
+       // print("UnBlocked sfx");
         audioManager.SetVolumeSFX((int)slider.value);
         UnMuteSFX(); // just to remove the mute symbol
     }
     public void ChangeVolumeMusic(Slider slider)
     {
         // print((int)volumeSlider.value);
-
+        if (ignoreNextMusicChange)
+        {
+            print("Blocked music");
+            ignoreNextMusicChange = false;
+            return;
+        }
+        //print("UnBlocked music");
         audioManager.SetVolumeMusic((int)slider.value);
         UnMuteMusic(); // just to remove the mute symbol
     }
@@ -128,10 +135,16 @@ public class Settings : MonoBehaviour
     public void ChangeControllerSensitivity(Slider slider)
     {
         // print((int)volumeSlider.value);
-
+        if (ignoreNextSensitivityChange)
+        {
+            ignoreNextSensitivityChange = false;
+            return;
+        }
         audioManager.SetControllerSensitivity((float)slider.value);
     }
 
+
+   
     public void ChangeMuteSFX()
     {
         if (isMutedSFX)
@@ -156,39 +169,67 @@ public class Settings : MonoBehaviour
         }
     }   
 
-    public void MuteSFX()
+    public void SetSFXImages()
+    {
+        if (isMutedSFX)
+        {
+            muteObjectSFX.SetActive(true);
+            unMuteObjectSFX.SetActive(false);
+
+        }
+        else
+        {
+            muteObjectSFX.SetActive(false);
+            unMuteObjectSFX.SetActive(true);
+        }
+    }
+
+    public void MuteSFX(bool shouldMute = true)
     {
         isMutedSFX = true;
         // called by button
-        audioManager.MuteVolumeSFX();
+        if (shouldMute)
+        {
+            print("Muting it");
+            audioManager.MuteVolumeSFX();
+        }
+        SetSFXImages();
 
-        if (muteObjectSFX != null)
-            muteObjectSFX.SetActive(true);
 
-        if (unMuteObjectSFX!= null)
-            unMuteObjectSFX.SetActive(false);
     }
 
-    public void UnMuteSFX()
+    public void UnMuteSFX(bool shouldMute = true)
     {
         isMutedSFX = false;
         // called by button
-        audioManager.UnMuteVolumeSFX();
-        muteObjectSFX.SetActive(false);
-        unMuteObjectSFX.SetActive(true);
+        if (shouldMute)
+            audioManager.UnMuteVolumeSFX();
+        SetSFXImages();
 
     }
 
+
+    public void SetMusicImages()
+    {
+        if (isMutedMusic)
+        {
+
+            muteObjectMusic.SetActive(true);
+            unMuteObjectMusic.SetActive(false);
+
+        }
+        else
+        {
+            muteObjectMusic.SetActive(false);
+            unMuteObjectMusic.SetActive(true);
+        }
+    }
     public void MuteMusic()
     {
         isMutedMusic = true;
         // called by button
         audioManager.MuteVolumeMusic();
-        if(muteObjectMusic != null)
-        muteObjectMusic.SetActive(true);
-
-        if(unMuteObjectMusic != null)
-        unMuteObjectMusic.SetActive(false);
+        SetMusicImages();
     }
 
     public void UnMuteMusic()
@@ -196,9 +237,7 @@ public class Settings : MonoBehaviour
         isMutedMusic = false;
         // called by button
         audioManager.UnMuteVolumeMusic();
-        muteObjectMusic.SetActive(false);
-        unMuteObjectMusic.SetActive(true);
-
+        SetMusicImages();
     }
 
     public void UnMuteBothSounds() {
@@ -208,6 +247,11 @@ public class Settings : MonoBehaviour
         unMuteObjectSFX.SetActive(true);
     }
 
+    public void SetBothImages()
+    {
+        SetMusicImages();
+        SetSFXImages();
+    }
 
 
     public void ToggleOptionsMenu(Button button)

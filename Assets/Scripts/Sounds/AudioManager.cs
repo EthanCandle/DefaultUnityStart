@@ -42,7 +42,7 @@ public class AudioManager : MonoBehaviour
     void Awake()
     {
         //   print("Gett setting in audiomanager");
-
+        volumeData = Application.dataPath + "/volumeData.txt";
 
         // create self if not already in
         if (instance == null)
@@ -70,6 +70,7 @@ public class AudioManager : MonoBehaviour
         gm = GameManager.instance;
         LoadData();
     }
+
     public Sound FindSound(string name)
     {
         // goes through the sounds array
@@ -109,65 +110,6 @@ public class AudioManager : MonoBehaviour
         sourceSound.source.loop = sourceSound.loop;
         sourceSound.source.outputAudioMixerGroup = sourceSound.audioMixerGroup;
         // plays teh sound
-        sourceSound.source.Play();
-
-        // deletes objects after finishing (might mess up if pitch is different, maybe multiply or divide by pitch?)
-        Destroy(newGameObject, sourceSound.clip.length / sourceSound.pitch);
-    }
-
-    public void PlaySoundInstantiate(Sound sourceSound, float timeToPlayRatio)
-    {
-        if (sourceSound == null || isSFXMuted)
-        {
-            return;
-        }
-        // print(sourceSound.name);
-        // plays a sound by creating an empty object with the sound attached and deletes it when it ends
-        amountOfSoundsSoFar++;
-
-        // FindObjectOfType<AudioManager>().PlaySoundInstantiate(deathSFX);
-        // use the var:     public Sound deathSFX;
-
-        // creates the object
-        GameObject newGameObject = new GameObject($"Sound Holder ({amountOfSoundsSoFar})", typeof(AudioSource));
-
-        // addes the audiosource and sets it
-        sourceSound.source = newGameObject.GetComponent<AudioSource>();
-
-        sourceSound.source.clip = sourceSound.clip;
-
-        sourceSound.source.volume =  sourceSound.volumeOriginal; // currentVolume / 100.0f *
-        sourceSound.source.pitch = sourceSound.pitch;
-        sourceSound.source.loop = sourceSound.loop;
-        sourceSound.source.outputAudioMixerGroup = sourceSound.audioMixerGroup;
-        // plays teh sound
-        sourceSound.source.Play();
-
-        // deletes objects after finishing (might mess up if pitch is different, maybe multiply or divide by pitch?)
-        Destroy(newGameObject, sourceSound.clip.length / sourceSound.pitch * timeToPlayRatio);
-    }
-
-    public void PlaySoundInstantiate(string nameOfSound)
-    {
-        // plays a sound by creating an empty object with the sound attached and deletes it when it ends
-        Sound sourceSound = FindSound(nameOfSound);
-
-        // call using this
-        // FindObjectOfType<AudioManager>().PlaySoundInstantiate(deathSFX);
-  
-
-        // creates empty object with an audioSource on it
-        GameObject newGameObject = new GameObject($"Sound Holder (1)", typeof(AudioSource));
-        //AddComponent
-        sourceSound.source = newGameObject.GetComponent<AudioSource>();
-
-        sourceSound.source.clip = sourceSound.clip;
-
-        sourceSound.source.volume = sourceSound.volume;
-        sourceSound.source.pitch = sourceSound.pitch;
-        sourceSound.source.loop = sourceSound.loop;
-
-        // plays the sound
         sourceSound.source.Play();
 
         // deletes objects after finishing (might mess up if pitch is different, maybe multiply or divide by pitch?)
@@ -236,6 +178,7 @@ public class AudioManager : MonoBehaviour
         GetTransitionSpeed();
 
     }
+
     public void FadeIn()
     {
         // this should only be called by the transition manager
@@ -244,40 +187,6 @@ public class AudioManager : MonoBehaviour
         shouldFadeIn = true;
         GetTransitionSpeed();
         songCurrentlyPlaying.volume = 0;
-    }
-    // FindObjectOfType<AudioManager>().Play("BombDeport");
-
-    public void PlaySFX(string name)
-    {
-        //  FindObjectOfType<AudioManager>().PlaySFX("BombDeport");
-
-        // goes through the sounds array
-        Sound s = Array.Find(sounds, sound => sound.name == name);
-        if (s == null)
-        {
-            Debug.LogWarning("Sound: " + name + " not found!");
-            return;
-        }
-        s.source.Play();
-
-    }
-
-    public void PlayMainMenuTheme(string name)
-    {
-        //  FindObjectOfType<AudioManager>().PlayMainMenuTheme("BombDeport");
-
-        StopCurrentSong();
-
-        // goes through the music array
-        Sound s = Array.Find(mainMenuMusic, sound => sound.name == name);
-        if (s == null)
-        {
-            Debug.LogWarning("Sound: " + name + " not found!");
-            return;
-        }
-        s.source.Play();
-        songCurrentlyPlaying = s.source;
-
     }
 
     public void PlayLevelMusic()
@@ -363,7 +272,6 @@ public class AudioManager : MonoBehaviour
         songCurrentlyPlaying = s.source;
     }
 
-
     public void PlayRandomGamePlayMusic()
     {
         //   FindObjectOfType<AudioManager>().PlayRandomGamePlayMusic();
@@ -386,18 +294,11 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    public void SetVolumeSFX(int amountToChange, bool onlySetVolume = false)
+    public void SetVolumeSFX(int amountToChange)
     {
         audioDataLocal.sfxVolume = amountToChange;
 
-        if (onlySetVolume)
-        {
-            return;
-        }
-        audioDataLocal.isSFXMuted = false;
-        AdjustVolumeSFX(audioDataLocal.sfxVolume);
-
-
+        UnMuteVolumeSFX();
     }
 
     public void MuteVolumeSFX()
@@ -412,17 +313,13 @@ public class AudioManager : MonoBehaviour
     {
         audioDataLocal.isSFXMuted = false;
         AdjustVolumeSFX(audioDataLocal.sfxVolume);
-
-
     }    
     
     public void AdjustVolumeSFX(float volume)
     {
         float dB = Mathf.Lerp(-20, 20f, volume / 100f);
 
-
         DirectSetVolumeSFX(dB);
-
     }
 
     public void DirectSetVolumeSFX(float volume)
@@ -435,35 +332,25 @@ public class AudioManager : MonoBehaviour
     }
 
 
-    public void SetVolumeMusic(int amountToChange, bool onlySetVolume = false)
+    public void SetVolumeMusic(int amountToChange)
     {
         audioDataLocal.musicVolume = amountToChange;
-        if (onlySetVolume)
-        {
-            return;
-        }
+        UnMuteVolumeMusic();
 
+    }
+    public void UnMuteVolumeMusic()
+    {
         audioDataLocal.isMusicMuted = false;
+      //  print($"Music muted is: {audioDataLocal.isMusicMuted}");
 
-       // print($"Music muted is: {audioDataLocal.isMusicMuted}, volume: {audioDataLocal.musicVolume}");
         AdjustVolumeMusic(audioDataLocal.musicVolume);
-
     }
 
     public void MuteVolumeMusic()
     {
         audioDataLocal.isMusicMuted = true;
-      //  print($"Music muted is: {audioDataLocal.isMusicMuted}");
-
         DirectSetVolumeMusic(-800);
-    }
-
-    public void UnMuteVolumeMusic()
-    {
-        audioDataLocal.isMusicMuted = false;
-        //print($"Music muted is: {audioDataLocal.isMusicMuted}");
-
-        AdjustVolumeMusic(audioDataLocal.musicVolume);
+       // print($"Music muted is: {audioDataLocal.isMusicMuted}");
     }
 
     public void AdjustVolumeMusic(float volume)
@@ -571,7 +458,7 @@ public class AudioManager : MonoBehaviour
         SetVolumeData();
         LoadControllerSensitivity();
 
-        settingScript.CallDelayStartStuff();
+        settingScript.SetStartStuff();
         //print(audioDataLocal.musicVolume);
     }
 
@@ -600,27 +487,23 @@ public class AudioManager : MonoBehaviour
 
     public void SetVolumeData()
     {
-        //  print("Set volume datat");
-        // print(audioDataLocal.musicVolume);
+         // print("Set volume datat");
+        // print(audioDataLocal);
        
         if (audioDataLocal.isMusicMuted)
         {
-            print("ismuted");
-            SetVolumeMusic(audioDataLocal.musicVolume , true);
+          //  print("ismuted");
             MuteVolumeMusic();
-            CallDelayFrameMusic();
         }
         else
         {
+           // print("Music is not muted");
             SetVolumeMusic(audioDataLocal.musicVolume);
-
         }
 
         if (audioDataLocal.isSFXMuted)
         {
-            SetVolumeSFX(audioDataLocal.sfxVolume, true);
             MuteVolumeSFX();
-            CallDelayFrameSFX();
         }
         else
         {
@@ -646,17 +529,10 @@ public class AudioManager : MonoBehaviour
         {
             print("Null seting script");
         }
-        audioDataLocal.isMusicMuted = true;
-        settingScript.MuteMusic();
         yield return null;
-
         audioDataLocal.isMusicMuted = true;
         settingScript.MuteMusic();
-        yield return null;
-       // print("IN coroco");
 
-        audioDataLocal.isMusicMuted = true;
-        settingScript.MuteMusic();
 
     }   
     public IEnumerator DelayFrameSFX()
@@ -666,23 +542,17 @@ public class AudioManager : MonoBehaviour
         {
             print("Null seting script");
         }
-        print("Null seting script");
+       // print("Null seting script");
         if (audioDataLocal == null)
         {
             print("Null audioDataLocal script");
         }
+      
+        yield return null;
+
         audioDataLocal.isSFXMuted = true;
         settingScript.MuteSFX();
-        print("Null seting script");
-        yield return null;
-        audioDataLocal.isSFXMuted = true;
-        settingScript.MuteSFX();
-        print("Null seting script");
-        yield return null;
-      //  print("IN coroco");
-     audioDataLocal.isSFXMuted = true;
-        settingScript.MuteSFX();
-        print("Null seting script");
+
     }
 
     public void SetControllerSensitivity(float amountToChange)
@@ -696,7 +566,7 @@ public class AudioManager : MonoBehaviour
     public void LoadControllerSensitivity()
     {
 
-      if(audioDataLocal == null)
+        if(audioDataLocal == null)
         {
             print("Audio data null in controller sensitityivty");
             return;
@@ -707,7 +577,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
         InputManager.instance.sensitivity = audioDataLocal.controllerSensitivity;
-       // print(gm._input.sensitivity);
+           // print(gm._input.sensitivity);
     }
 
 

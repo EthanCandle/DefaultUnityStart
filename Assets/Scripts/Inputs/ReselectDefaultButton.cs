@@ -44,7 +44,7 @@ public class ReselectDefaultButton : MonoBehaviour
         if ((EventSystem.current.currentSelectedGameObject == null || !EventSystem.current.currentSelectedGameObject.activeInHierarchy) && Gamepad.current != null)
         {
 
-            print("setting random button");
+           // print("setting random button");
             // Check if the user is trying to navigate with controller
             Vector2 nav = Gamepad.current.leftStick.ReadValue();
             bool dpadPressed = Gamepad.current.dpad.ReadValue() != Vector2.zero;
@@ -234,7 +234,7 @@ public class ReselectDefaultButton : MonoBehaviour
 
         currentButton = buttonToSet.gameObject;
         EventSystem.current.SetSelectedGameObject(buttonToSet.gameObject);
-        print(currentButton.name);
+       // print(currentButton.name);
     }
 
     public void ClosedMenuGoToGamePlay()

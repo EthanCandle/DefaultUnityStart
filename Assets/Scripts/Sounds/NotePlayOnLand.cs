@@ -16,7 +16,7 @@ public class NotePlayOnLand : MonoBehaviour
 
     public void PlaySound()
     {
-        FindObjectOfType<AudioManager>().PlaySoundInstantiate(soundToPlay, noteDuration);
+        //FindObjectOfType<AudioManager>().PlaySoundInstantiate(soundToPlay, noteDuration);
     }
 
 
