@@ -57,6 +57,7 @@ public class SettingsManager : MonoBehaviour
         // pause input or if we are already paused and they press back button)
         if (InputManager.instance.pause || (isPaused && _input.goBack))
         {
+            return;
             if (!canPause)
             {
                 return;
